@@ -12,14 +12,15 @@ Taller práctico para comparar servicios de análisis de imágenes usando AWS Re
 ### Pasos
 
 1. **Crear bucket S3**
-\```bash
+
+```bash
 aws s3api create-bucket --bucket msmk-rekognition-demo --region us-east-1
-\```
+```
 
 2. **Subir imagen de prueba**
-\```bash
+```bash
 aws s3 cp demo-imagen.jpg s3://msmk-rekognition-demo/
-\```
+```
 
 3. **Crear Rol IAM**
    - Servicio: Lambda
@@ -28,8 +29,8 @@ aws s3 cp demo-imagen.jpg s3://msmk-rekognition-demo/
      - `AmazonS3ReadOnlyAccess`
      - `AWSLambdaBasicExecutionRole`
 
-4. **Crear función Lambda (Python 3.12)**
-\```python
+4. **Crear función Lambda (Python 3.13)**
+```python
 import boto3
 
 def lambda_handler(event, context):
@@ -42,16 +43,16 @@ def lambda_handler(event, context):
         MaxLabels=10
     )
     return [label['Name'] for label in response['Labels']]
-\```
+```
 
 5. **Configurar**
    - Timeout: 30 segundos
    - Rol: El creado en paso 3
 
 6. **Probar**
-\```bash
+```bash
 aws lambda invoke --function-name analizar-imagen-rekognition output.txt
-\```
+```
 
 ## Ejercicio 2: Google Vertex AI + Gemini
 
@@ -66,21 +67,21 @@ aws lambda invoke --function-name analizar-imagen-rekognition output.txt
    - Generative Language API
 
 2. **Crear bucket Cloud Storage**
-\```bash
+```bash
 gsutil mb -l us-central1 gs://msmk-demo-gemini
 gsutil cp demo-imagen.jpg gs://msmk-demo-gemini
 gsutil iam ch allUsers:objectViewer gs://msmk-demo-gemini
-\```
+```
 
 3. **Crear entorno Python**
-\```bash
+```bash
 python -m venv venv
 source venv/bin/activate
 pip install google-cloud-aiplatform pillow requests
-\```
+```
 
 4. **Código de análisis (gemini_analysis.py)**
-\```python
+```python
 from vertexai.preview.generative_models import GenerativeModel, Part
 import vertexai
 import requests
@@ -99,13 +100,13 @@ response = model.generate_content([
 ])
 
 print(response.text)
-\```
+```
 
 5. **Ejecutar**
-\```bash
+```bash
 export GOOGLE_APPLICATION_CREDENTIALS="ruta/tus-credenciales.json"
 python gemini_analysis.py
-\```
+```
 
 ## Comparación de Servicios
 
